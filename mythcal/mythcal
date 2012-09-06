@@ -1,0 +1,307 @@
+#! /usr/bin/python -W ignore
+
+# mythcal
+
+# Copyright 2009 Richard Fearn
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+CONFIG_FILE = "mythcal.conf"
+CACHE_FILE = "mythcal.cache"
+
+DATE_FORMAT = "%Y-%m-%d"
+DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000Z"
+
+import ConfigParser
+from optparse import Values, OptionParser
+
+from datetime import datetime
+import pickle
+import os
+import sys
+
+from MythTV import MythTV
+import pytz
+import gdata.calendar.service
+import atom
+import time
+
+from pprint import pprint
+def dump(obj):
+  '''return a printable representation of an object for debugging'''
+  newobj=obj
+  if '__dict__' in dir(obj):
+    newobj=obj.__dict__
+    if ' object at ' in str(obj) and not newobj.has_key('__type__'):
+      newobj['__type__']=str(obj)
+    for attr in newobj:
+      newobj[attr]=dump(newobj[attr])
+  return newobj
+
+config = ConfigParser.RawConfigParser()
+config.read(CONFIG_FILE)
+
+settings = Values({
+        "mythtv": Values({
+                "timezone": config.get("mythtv", "timezone")
+        }),
+        "google": Values({
+                "username": config.get("google", "username"),
+                "password": config.get("google", "password")
+        }),
+        "calendar": Values({
+                "name": config.get("calendar", "name"),
+                "id": config.get("calendar", "id"),
+                "max_batch_size" : int(config.get("calendar", "max_batch_size"))
+        })
+})
+
+parser = OptionParser()
+parser.add_option("-n", "--dry-run", action="store_true", dest="dry_run", default=False, help="perform a trial run; don't make any changes")
+(options, args) = parser.parse_args()
+
+# get pytz timezone object for local time zone
+if settings.mythtv.timezone not in pytz.all_timezones:
+    print >>sys.stderr, "mythcal: timezone name '%s' is not recognised" % settings.mythtv.timezone
+    sys.exit(1)
+time_zone = pytz.timezone(settings.mythtv.timezone)
+
+def naive_local_time_to_naive_utc_time(naive_local_time):
+    """Convert naive local time to naive UTC time"""
+    aware_local_time = time_zone.localize(naive_local_time)
+    aware_utc_time = aware_local_time.astimezone(pytz.utc)
+    naive_utc_time = aware_utc_time.replace(tzinfo=None)
+    return naive_utc_time
+
+def convert_bytes(bytes):
+    bytes = float(bytes)
+    if bytes >= 1099511627776:
+        terabytes = bytes / 1099511627776
+        size = '%.2f TB' % terabytes
+    elif bytes >= 1073741824:
+        gigabytes = bytes / 1073741824
+        size = '%.2f GB' % gigabytes
+    elif bytes >= 1048576:
+        megabytes = bytes / 1048576
+        size = '%.2f MB' % megabytes
+    elif bytes >= 1024:
+        kilobytes = bytes / 1024
+        size = '%.2f KB' % kilobytes
+    else:
+        size = '%d b' % bytes
+    return size
+
+def convert_program(prog):
+    """Converts a MythTV Program object to a dictionary"""
+    desc = prog.description
+    title = prog.title
+    if prog.starttime < datetime.utcnow():
+        desc = desc + "\n\nSize: " + convert_bytes(str(prog.filesize))
+
+        if prog.filesize < 1000:
+            desc = desc + " (too small - recording is bad)"
+            title = "[BAD] " + title
+
+    return {
+        "title": title,
+        "subtitle": prog.subtitle,
+        "channel": prog.channame,
+        "start": naive_local_time_to_naive_utc_time(prog.starttime),
+        "end": naive_local_time_to_naive_utc_time(prog.endtime),
+        "description": desc
+    }
+
+def sort_programs_by_start(p1, p2):
+    return cmp(p1["start"], p2["start"])
+
+def get_recordings_from_backend():
+    """Gets previous, current and upcoming recordings from MythTV"""
+
+    mythtv = MythTV()
+
+    previous = mythtv.getRecordings()
+    previous = map(convert_program, previous)
+    previous.sort(sort_programs_by_start)
+
+    upcoming = mythtv.getUpcomingRecordings()
+    upcoming = map(convert_program, upcoming)
+    upcoming.sort(sort_programs_by_start)
+
+    current = []
+    for recorder in mythtv.getRecorderList():
+        # str(...) required due to MythTV issue #7648
+        # see http://svn.mythtv.org/trac/ticket/7648
+        if mythtv.isRecording(str(recorder)):
+            current.append(mythtv.getCurrentRecording(str(recorder)))
+    current = map(convert_program, current)
+    current.sort(sort_programs_by_start)
+
+    return {"previous": previous, "current": current, "future": upcoming}
+
+# get recordings from MythTV backend
+recordings = get_recordings_from_backend()
+
+# load recording list from last time
+last_recordings = None
+if os.path.exists(CACHE_FILE):
+    f = open(CACHE_FILE, "r")
+    last_recordings = pickle.load(f)
+    f.close()
+
+def submit_batch_request(request, url):
+    response_feed = calendar_service.ExecuteBatch(request, url)
+    # for entry in response_feed.entry:
+    #     print "%s; status %s; reason %s" % (entry.batch_id.text, entry.batch_status.code, entry.batch_status.reason)
+
+def delete_updated_events():
+    """Deletes any existing MythTV updated events from the calendar"""
+    if options.dry_run:
+        print "Deleting updated events..."
+    event_feed = calendar_service.GetCalendarEventFeed(cal.content.src)
+    if not options.dry_run:
+        batch_request = gdata.calendar.CalendarEventFeed()
+    for event in event_feed.entry:
+        for when in event.when:
+            isAllDay = 0
+            try:
+                start_tm = time.strptime(when.start_time, DATE_FORMAT)
+                end_tm = time.strptime(when.end_time, DATE_FORMAT)
+                if time.mktime(start_tm) + (24*60*60) == time.mktime(end_tm):
+                    isAllDay = 1
+		#print "event:"+event.title.text
+		#print "  start:"+repr(start_tm)
+		#print "  end:"+repr(end_tm)
+		#print "  isAllDay:"+repr(isAllDay)
+            except ValueError:
+                break
+            if isAllDay == 1 and event.title.text.startswith("MythTV updated"):
+                if options.dry_run:
+                    print "    deleting \"%s\"" % event.title.text
+                else:
+                    event.batch_id = gdata.BatchId(text="delete-request")
+                    batch_request.AddDelete(entry=event)
+    if options.dry_run:
+        event_feed = None
+    else:
+        submit_batch_request(batch_request, batch_url)
+    if options.dry_run:
+        print "Updated events deleted."
+
+def delete_existing_events():
+    """Deletes all events from the calendar"""
+
+    if options.dry_run:
+        print "Deleting existing entries..."
+    event_feed = calendar_service.GetCalendarEventFeed(cal.content.src)
+    while event_feed and len(event_feed.entry):
+        if not options.dry_run:
+            batch_request = gdata.calendar.CalendarEventFeed()
+        for event in event_feed.entry:
+            if options.dry_run:
+                print "    deleting \"%s\"" % event.title.text
+            else:
+                event.batch_id = gdata.BatchId(text="delete-request")
+                batch_request.AddDelete(entry=event)
+        if options.dry_run:
+            if event_feed.GetNextLink():
+                event_feed = calendar_service.GetCalendarEventFeed(event_feed.GetNextLink().href)
+            else:
+                event_feed = None
+        else:
+            submit_batch_request(batch_request, batch_url)
+            event_feed = calendar_service.GetCalendarEventFeed(cal.content.src)
+    if options.dry_run:
+        print "Existing entries deleted."
+
+# get calendar service and log in
+calendar_service = gdata.calendar.service.CalendarService()
+calendar_service.email = settings.google.username
+calendar_service.password = settings.google.password
+calendar_service.source = "mythcal"
+calendar_service.ProgrammaticLogin()
+
+# get MythTV calendar
+calendars_feed = calendar_service.GetOwnCalendarsFeed()
+cal = (c for c in calendars_feed.entry if c.title.text == settings.calendar.name).next()
+batch_url = "http://www.google.com/calendar/feeds/%s/private/full/batch" % settings.calendar.id
+
+def create_event(title, start, end, content=None):
+    event = gdata.calendar.CalendarEventEntry()
+    event.title = atom.Title(text=title)
+    if content:
+        event.content = atom.Content(text=content)
+    event.when.append(gdata.calendar.When(start_time=start, end_time=end))
+    return event
+
+def create_all_day_event(title, start, end, content=None):
+    event_start = time.strftime(DATE_FORMAT, start)
+    event_end = time.strftime(DATE_FORMAT, end)
+    return create_event(title=title, start=event_start, end=event_end, content=content)
+
+def create_programme_event(title, subtitle, channel, start, end, content=None):
+    if subtitle:
+        event_title = "%s: %s (%s)" % (title, subtitle, channel)
+    else:
+        event_title = "%s (%s)" % (title, channel)
+    event_start = time.strftime(DATE_TIME_FORMAT, start)
+    event_end = time.strftime(DATE_TIME_FORMAT, end)
+    return create_event(title=event_title, start=event_start, end=event_end, content=content)
+
+if not options.dry_run:
+    request_feed = gdata.calendar.CalendarEventFeed()
+
+# update calendar, and output new recording list, if different
+if recordings != last_recordings:
+
+    delete_existing_events()
+
+    if options.dry_run:
+        print "Adding new entries..."
+
+    # add an event for current/future recordings
+    for prog in recordings["previous"] + recordings["current"] + recordings["future"]:
+        if options.dry_run:
+            print "    adding \"%s\"" % prog["title"]
+        else:
+            event = create_programme_event(prog["title"], prog["subtitle"], prog["channel"], prog["start"].timetuple(), prog["end"].timetuple(), prog["description"])
+            event.batch_id = gdata.BatchId(text="insert-request")
+            request_feed.AddInsert(entry=event)
+            if len(request_feed.entry) == settings.calendar.max_batch_size:
+                submit_batch_request(request_feed, batch_url)
+                request_feed = gdata.calendar.CalendarEventFeed()
+
+    if options.dry_run:
+        print "New entries added."
+
+    # update last recording list
+    if options.dry_run:
+        print "Updating cache..."
+    else:
+        f = open(CACHE_FILE, "w")
+        pickle.dump(recordings, f)
+        f.close()
+
+    if options.dry_run:
+        print "Done."
+
+# add 'last updated' event
+last_update_text = "MythTV updated %s" % time.strftime("%H:%M", time.localtime())
+delete_updated_events()
+if options.dry_run:
+    print "    adding \"%s\"" % last_update_text
+else:
+    event = create_all_day_event(title=last_update_text, start=time.gmtime(), end=time.gmtime(time.time() + 24*60*60))
+    event.batch_id = gdata.BatchId(text="insert-request")
+    request_feed.AddInsert(entry=event)
+    submit_batch_request(request_feed, batch_url)
+

@@ -1,0 +1,113 @@
+##
+# rcmkb key bindings
+##
+begin
+    prog   = rcmkb
+    button = ok
+    config = mouse1
+end
+
+begin
+    prog   = rcmkb
+    button = start
+    config = mouse3
+end
+
+begin
+    prog   = rcmkb
+    button = chup
+    config = mouse4
+end
+
+begin
+    prog   = rcmkb
+    button = chdown
+    config = mouse5
+end
+
+begin
+    prog   = rcmkb
+    button = up
+    config = move_n
+end
+
+begin
+    prog   = rcmkb
+    button = right
+    config = move_e
+end
+
+begin
+    prog   = rcmkb
+    button = down
+    config = move_s
+end
+
+begin
+    prog   = rcmkb
+    button = left
+    config = move_w
+end
+
+begin
+    prog   = rcmkb
+    button = 5
+    config = mouse1
+end
+
+begin
+    prog   = rcmkb
+    button = 0
+    config = mouse3
+end
+
+begin
+    prog   = rcmkb
+    button = 2
+    config = jump_n
+end
+
+begin
+    prog   = rcmkb
+    button = 3
+    config = jump_ne
+end
+
+begin
+    prog   = rcmkb
+    button = 6
+    config = jump_e
+end
+
+begin
+    prog   = rcmkb
+    button = 9
+    config = jump_se
+end
+
+begin
+    prog   = rcmkb
+    button = 8
+    config = jump_s
+end
+
+begin
+    prog   = rcmkb
+    button = 7
+    config = jump_sw
+end
+
+begin
+    prog   = rcmkb
+    button = 4
+    config = jump_w
+end
+
+begin
+    prog   = rcmkb
+    button = 1
+    config = jump_nw
+end
+##
+# End of rcmkb key bindings
+##

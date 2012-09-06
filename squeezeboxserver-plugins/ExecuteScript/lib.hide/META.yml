@@ -1,0 +1,12 @@
+build_requires: {}
+conflicts: {}
+dist_name: /usr/local/slimserver/svn/7.2/trunk/server/Plugins/ExecuteScript/lib/Plugins-ExecuteScript-Plugin.par
+distribution_type: par
+dynamic_config: 0
+generated_by: 'PAR::Packer version 0.976
+license: unknown
+par:
+  clean: 0
+  signature: ''
+  verbatim: 0
+  version: 0.977

@@ -1,0 +1,2 @@
+#!/bin/bash
+irsend -d /dev/lircd1 send_once Samsung_BN59-00630A 0

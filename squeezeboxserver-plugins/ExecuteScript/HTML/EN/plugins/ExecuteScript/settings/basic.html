@@ -1,0 +1,30 @@
+[% PROCESS settings/header.html %]
+[% IF prefs %]
+	[% WRAPPER settingSection %]
+		[% WRAPPER settingGroup title="PLUGIN_EXECUTE_SCRIPT" %]
+		<div class="groupDesc">[% "PLUGIN_GROUP_EXECUTE_DESC" | string %]</div>
+		<div class="groupDesc">[% "PLUGIN_EXECUTE_PLAYERSETUP_DESC" | string %]</div>
+		
+		[% IF scriptPath %]
+		<div class="groupDesc">[% "PLUGIN_EXECUTE_SCRIPTPATH" | string %][% scriptPath %]</div>
+		[% END %]
+	[% END %]
+	[% END %]
+	
+	[%- FOREACH thispref = prefs -%]
+	[%- NEXT IF NOT thispref.key.match('pref_') -%]
+	[% WRAPPER settingSection %]
+		[% WRAPPER settingGroup title="SETUP_PLUGIN-EXECUTE-" _ thispref.key desc="SETUP_PLUGIN-EXECUTE-" _ thispref.key _ "_DESC" %]
+			
+			<select class="stdedit" name="[% thispref.key %]" id="[% thispref.key %]">
+	
+			[% FOREACH option = scriptOptions %]
+				<option [% IF thispref.value == option.key %]selected [% END %]value="[% option.key %]">[% option.value %]</option>
+			[%- END -%]
+			
+			</select>
+		[% END %]
+		[%- END %]
+	[%- END %]
+[% END %]
+[% PROCESS settings/footer.html %]

@@ -1,0 +1,12 @@
+[%- pageicon = 'ExecuteScript' -%]
+[%- pagetitle = "PLUGIN_EXECUTESCRIPT_EXECUTESCRIPTWEB_TITLE" | string -%]
+[%- pwd_list = BLOCK -%]/
+        <a href="[% webroot %]plugins/ExecuteScript/index.html?item=[% item %]">
+                [% "PLUGIN_EXECUTESCRIPT" | string %]
+        </a>
+[% END -%]
+[%- PROCESS pageheader.html %]
+
+[% IF errormsg %]<p>[% errormsg %]</p>[% END %]
+
+[%- PROCESS pagefooter.html -%]

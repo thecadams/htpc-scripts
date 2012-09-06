@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mythmenu name="MAINER">
+
+    <button>
+        <type>TV_WATCH_TV</type>
+        <text>Live TV</text>
+        <description>Watch live television</description>
+        <action>TV_WATCH_LIVE</action>
+    </button>
+
+    <button>
+        <type>TV_WATCH_RECORDINGS</type>
+        <text>Recorded TV/Movies</text>
+        <description>Play recordings</description>
+        <action>TV_WATCH_RECORDING</action>
+    </button>
+
+    <button>
+        <type>VIDEO</type>
+        <text>Downloaded TV/Movies</text>
+        <description>Launches XBMC</description>
+        <action>EXEC /home/myth/scripts/sudo-appswitch.sh -x</action>
+    </button>
+
+    <button>
+        <type>INTERNET</type>
+        <text>Internet</text>
+        <description>Launches Firefox</description>
+        <action>EXEC /home/myth/scripts/sudo-appswitch.sh -f http://dance.ten.com.au/video.htm</action>
+    </button>
+
+    <button>
+        <type>DVD_PLAY</type>
+        <text>Play DVD</text>
+        <description>Play the video on a movie DVD</description>
+        <action>JUMP Play DVD</action>
+        <depends>mythvideo</depends>
+    </button>
+
+    <button>
+        <type>EJECT</type>
+        <text>Eject DVD drive</text>
+        <description>Eject CD or DVD from drive</description>
+        <action>EJECT</action>
+    </button>
+
+    <button>
+        <type>MENU_OTHER</type>
+        <text>Other stuff (setup etc.)</text>
+        <description>Other menu items</description>
+        <action>MENU mainmenu-default.xml</action>
+    </button>
+
+</mythmenu>

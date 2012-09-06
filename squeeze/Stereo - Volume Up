@@ -1,0 +1,2 @@
+#!/bin/bash
+irsend -d /dev/lircd1 send_once Panasonic_EUR7702260 volup

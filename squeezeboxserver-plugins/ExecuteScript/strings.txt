@@ -1,0 +1,75 @@
+PLUGIN_EXECUTE_SCRIPT
+	EN	Execute Script
+
+PLUGIN_GROUP_EXECUTE
+	EN	Execute Script On Event
+
+PLUGIN_GROUP_EXECUTE_DESC
+	EN	Select scripts or system commands to execute on certain server events.
+
+PLUGIN_EXECUTE_PLAYERSETUP_DESC
+	EN	Individual players may have individual settings that override the global server settings by selecting scripts via the remote.  Any players set to "(server)" will use the global server setting.
+
+PLUGIN_EXECUTE_SCRIPTPATH
+	EN	Looking for scripts at:
+
+PLUGIN_EXECUTE_PLAY
+	EN	Execute On Play File
+
+PLUGIN_EXECUTE_OPEN
+	EN	Execute On Open File
+
+PLUGIN_EXECUTE_STOP
+	EN	Execute On Stop
+
+PLUGIN_EXECUTE_POWER_ON
+	EN	Execute On Power On
+
+PLUGIN_EXECUTE_POWER_OFF
+	EN	Execute On Power Off
+
+PLUGIN_EXECUTE_ON_DEMAND
+	EN	Execute On Demand
+
+PLUGIN_SELECT_SCRIPT
+	EN	Select Script
+
+PLUGIN_EXECUTE_GO
+	EN	Running Script...
+
+SETUP_PLUGIN-EXECUTE-PREF_OPEN
+	EN	On Open
+
+SETUP_PLUGIN-EXECUTE-PREF_OPEN_DESC
+	EN	Run when a file is opened by the server
+
+SETUP_PLUGIN-EXECUTE-PREF_PLAY
+	EN	On Play
+
+SETUP_PLUGIN-EXECUTE-PREF_PLAY_DESC
+	EN	Run when a file is played by the server
+
+SETUP_PLUGIN-EXECUTE-PREF_STOP
+	EN	On Stop
+
+SETUP_PLUGIN-EXECUTE-PREF_STOP_DESC
+	EN	Run when playback is stopped on server.
+
+SETUP_PLUGIN-EXECUTE-PREF_POWER_ON
+	EN	On Power On
+
+SETUP_PLUGIN-EXECUTE-PREF_POWER_ON_DESC
+	EN	Run when a player is turned on.
+
+SETUP_PLUGIN-EXECUTE-PREF_POWER_OFF
+	EN	On Power Off
+
+SETUP_PLUGIN-EXECUTE-PREF_POWER_OFF_DESC
+	EN	Run when a player is turned off.
+
+SETUP_PLUGIN-EXECUTE-PREF_ON_DEMAND
+	EN	Execute On Demand
+
+SETUP_PLUGIN-EXECUTE-PREF_ON_DEMAND_DESC
+	EN	Execute On Mapped Button, or immediately from Plugin Player Menu
+

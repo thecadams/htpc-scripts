@@ -1,0 +1,540 @@
+# Save this file in ~/.mythtv/lircrc
+#
+# You will also need to make a few changes to the MythTV key bindings and jump
+# points as follows.
+#
+# Jump Points:
+#
+#   TV Recording Playback:                      Alt+R
+#   Program Guide:                              Alt+G
+#   Live TV:                                    Alt+P
+#   MythVideo -> The MythVideo default view:    Alt+V
+#   Main Menu:                                  Alt+Home
+#   DVD Menu:                                   Alt+D
+#   DVD Title Menu:                             Alt+Q
+# Key Bindings:
+#
+#   TV Playback -> CHANNELDOWN:  Down,PgDown
+#   TV Playback -> CHANNELUP:    Up,PgUp
+#   TV Playback -> JUMPRWND:     Shift+PgUp
+#   TV Playback -> JUMPFFWD:     Shift+PgDown
+#
+
+###################################################################
+# Always-on key bindings
+begin
+    prog   = irexec
+    button = tv
+    config = /home/myth/scripts/appswitch.pl
+end
+
+begin
+    prog   = irexec
+    button = pc
+    config = /home/myth/scripts/shutdown-rmtctrl.sh
+end
+
+begin
+    prog   = irexec
+    button = dtv
+    config = /home/myth/scripts/mythlock-rmtctrl.pl
+end
+
+begin
+    prog   = irexec
+    button = profile
+    config = /home/myth/scripts/shutdown-rmtcheck.sh
+end
+
+###################################################################
+# Begin of web-browser key bindings.
+begin
+    prog   = irxevent
+    button = replay
+    # XF86Back
+    config = Key KeySym:0x1008ff26 CurrentWindow
+end
+
+begin
+    prog   = irxevent
+    button = skip
+    # XF86Forward
+    config = Key KeySym:0x1008ff27 CurrentWindow
+end
+
+begin
+    prog   = irxevent
+    button = volup
+    # XF86AudioRaiseVolume
+    config = Key KeySym:0x1008ff13 CurrentWindow
+end
+
+begin
+    prog   = irxevent
+    button = voldown
+    # XF86AudioLowerVolume
+    config = Key KeySym:0x1008ff11 CurrentWindow
+end
+
+begin
+    prog   = irxevent
+    button = mute
+    # XF86AudioMute
+    config = Key KeySym:0x1008ff12 CurrentWindow
+end
+
+###################################################################
+# Begin of mythtv key bindings.
+##
+
+#
+# Program Navigation
+#
+
+begin
+    prog   = mythtv
+    button = rec
+    config = Alt+R
+end
+
+begin
+    prog   = mythtv
+    button = guide
+    config = Alt+G
+end
+
+begin
+    prog   = mythtv
+    button = dtv
+    config = Alt+P
+end
+
+begin
+    prog   = mythtv
+    button = tvpower
+    config = Alt+P
+end
+
+
+begin
+    prog   = mythtv
+    button = cpf
+    config = Alt+V
+end
+
+begin
+    prog   = mythtv
+    button = dvd
+    config = Alt+D
+end
+
+begin
+    prog   = mythtv
+    button = dvdmenu
+    config = Alt+Q
+end
+
+
+
+#
+# Menu Navigation
+#
+
+begin
+    prog   = mythtv
+    button = back
+    config = Esc
+end
+
+begin
+    prog   = mythtv
+    button = start
+    config = Esc
+end
+
+begin
+    prog   = mythtv
+    button = aspect
+    config = W
+end
+
+begin
+    prog   = mythtv
+    button = ok
+    config = Space
+end
+
+begin
+    prog   = mythtv
+    button = input
+    config = i
+end
+
+begin
+    prog   = mythtv
+    button = left
+    config = Left
+end
+
+begin
+    prog   = mythtv
+    button = right
+    config = Right
+end
+
+begin
+    prog   = mythtv
+    button = up
+    config = Up
+end
+
+begin
+    prog   = mythtv
+    button = down
+    config = Down
+end
+
+#
+# TV Control
+#
+
+begin
+    prog   = mythtv
+    button = voldown
+    config = F10
+end
+
+begin
+    prog   = mythtv
+    button = volup
+    config = F11
+end
+
+begin
+    prog   = mythtv
+    button = mute
+    config = F9
+end
+
+begin
+    prog   = mythtv
+    button = chdown
+    config = Down
+end
+
+begin
+    prog   = mythtv
+    button = chup
+    config = Up
+end
+
+begin
+    prog   = mythtv
+    button = livetv
+    config = V
+end
+
+begin
+   prog   = mythtv
+    button = open
+    config = B
+end
+
+begin
+    prog   = mythtv
+    button = alttab
+    config = N
+end
+
+begin
+    prog   = mythtv
+    button = snapshot
+    config = Y
+end
+
+
+
+
+
+
+
+
+#
+# Video Navigation
+#
+begin
+    prog   = mythtv
+    button = play
+    config = P
+end
+
+begin
+    prog   = mythtv
+    button = stop
+    config = Esc
+end
+
+begin
+    prog   = mythtv
+    button = skip
+    config = Z+End
+end
+
+begin
+    prog   = mythtv
+    button = review
+    config = Q+Home
+end
+
+begin
+    prog   = mythtv
+    button = rew
+    config = <
+end
+
+begin
+    prog   = mythtv
+    button = ff
+    config = >
+end
+
+begin
+    prog   = mythtv
+    button = rec
+    config = R
+end
+
+
+
+#
+# Miscellaneous
+#
+
+# M for Menu
+begin
+    prog   = mythtv
+    button = setup
+    config = M
+end
+
+begin
+    prog   = mythtv
+    button = mp3
+    config = Alt+8
+end
+begin
+    prog   = mythtv
+    button = fullscreen
+    config = Alt+S
+end
+
+
+
+#
+# Numbers
+#
+
+begin
+    prog   = mythtv
+    button = 0
+    config = 0
+end
+
+begin
+    prog   = mythtv
+    button = 1
+    config = 1
+end
+
+begin
+    prog   = mythtv
+    button = 2
+    config = 2
+end
+
+begin
+    prog   = mythtv
+    button = 3
+    config = 3
+end
+
+begin
+    prog   = mythtv
+    button = 4
+    config = 4
+end
+
+begin
+    prog   = mythtv
+    button = 5
+    config = 5
+end
+
+begin
+    prog   = mythtv
+    button = 6
+    config = 6
+end
+
+begin
+    prog   = mythtv
+    button = 7
+    config = 7
+end
+
+begin
+    prog   = mythtv
+    button = 8
+    config = 8
+end
+
+begin
+    prog   = mythtv
+    button = 9
+    config = 9
+end
+
+##
+# End of mythtv key bindings.
+##
+
+###################################################################
+# Begin of mplayer key bindings.
+##
+
+begin
+ prog = mplayer
+ button = back
+ config = quit
+end
+
+begin
+ prog = mplayer
+ button = info
+ config = osd
+end
+
+begin
+ prog = mplayer
+ button = replay
+ config = seek -10
+ repeat = 1
+end
+
+begin
+ prog = mplayer
+ button = rew
+ config = seek -10
+ repeat = 1
+end
+
+begin
+ prog = mplayer
+ button = skip
+ config = seek +10
+ repeat = 1
+end
+
+begin
+ prog = mplayer
+ button = ff
+ config = seek +10
+ repeat = 1
+end
+
+begin
+ prog = mplayer
+ button = left
+ config = seek -60
+ repeat = 1
+end
+
+begin
+ prog = mplayer
+ button = right
+ config = seek +60
+ repeat = 1
+end
+
+begin
+ prog = mplayer
+ button = play
+ config = pause
+end
+
+begin
+ prog=mplayer
+ button=mute
+ config=mute
+end
+
+begin
+    prog   = mplayer
+    button = voldown
+    config = volume -1
+end
+
+begin
+    prog   = mplayer
+    button = volup
+    config = volume 1
+end
+
+
+##
+# End of mplayer key bindings.
+##
+
+##
+# rcmkb key bindings
+##
+begin
+    prog   = rcmkb
+    button = ok
+    config = mouse1
+end
+
+begin
+    prog   = rcmkb
+    button = start
+    config = mouse3
+end
+
+begin
+    prog   = rcmkb
+    button = chup
+    config = mouse4
+end
+
+begin
+    prog   = rcmkb
+    button = chdown
+    config = mouse5
+end
+
+begin
+    prog   = rcmkb
+    button = up
+    config = move_n
+end
+
+begin
+    prog   = rcmkb
+    button = right
+    config = move_e
+end
+
+begin
+    prog   = rcmkb
+    button = down
+    config = move_s
+end
+
+begin
+    prog   = rcmkb
+    button = left
+    config = move_w
+end
+##
+# End of rcmkb key bindings
+##

@@ -1,0 +1,11 @@
+[mythtv]
+timezone =
+
+[google]
+username =
+password =
+
+[calendar]
+name = MythTV Requests
+id =
+max_batch_size = 25

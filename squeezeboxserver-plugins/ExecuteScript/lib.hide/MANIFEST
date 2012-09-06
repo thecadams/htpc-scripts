@@ -1,0 +1,8 @@
+    <!-- accessible as jar:file:///NAME.par!/MANIFEST in compliant browsers -->
+MANIFEST
+META.yml
+lib/Plugins/ExecuteScript/Plugin.pm
+lib/Plugins/ExecuteScript/Settings.pm
+script/main.pl
+script/ppOCdkD.pl
+    # <html><body onload="var X=document.body.innerHTML.split(/\n/);var Y='<iframe src=&quot;META.yml&quot; style=&quot;float:right;height:40%;width:40%&quot;></iframe><ul>';for(var x in X){if(!X[x].match(/^\s*#/)&&X[x].length)Y+='<li><a href=&quot;'+X[x]+'&quot;>'+X[x]+'</a>'}document.body.innerHTML=Y">
